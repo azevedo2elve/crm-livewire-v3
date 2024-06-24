@@ -13,7 +13,7 @@
 
 uses(
     Tests\TestCase::class,
-    // Illuminate\Foundation\Testing\RefreshDatabase::class,
+    Illuminate\Foundation\Testing\RefreshDatabase::class, //no Pest mandar ele dar refresh no banco para poder testar varias vezes sem dar duplicidade
 )->in('Feature');
 
 /*
