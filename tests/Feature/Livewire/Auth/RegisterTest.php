@@ -1,5 +1,6 @@
 <?php
 use App\Livewire\Auth\Register;
+use App\Models\User;
 use Livewire\Livewire;
 
 use function Pest\Laravel\{assertDatabaseCount, assertDatabaseHas};
@@ -26,6 +27,10 @@ it('should be able to register a new user in the system', function () {
     ]);
 
     assertDatabaseCount('users', 1);
+
+    expect(auth()->check()) // esperando que esteja logado e o usuário logado o id dele seja o first id
+        ->and(auth()->user())
+        ->id->toBe(User::first()->id);
 });
 
 // campos obrigatórios / regras de validação
