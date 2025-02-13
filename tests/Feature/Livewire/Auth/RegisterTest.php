@@ -37,9 +37,20 @@ it('should be able to register a new user in the system', function () {
 // campos obrigatórios / regras de validação
 // nesse teste ele quer certificar que vai aparecer o erro caso o campo seja vázio, logo ao seta o campo com o valor vázio o test não vai passar
 test('validation rules', function ($f) {
-    Livewire::test(Register::class)
-        ->set($f->field, $f->value) //vai setar no Register o campo do banco onde o valor tem que ser obrigatório
-        ->call('submit')
+
+    // se nossa regra for igual a "unique" vai criar um usuário com o field igual ao valor
+    if($f->rule == 'unique') {
+        User::factory()->create([$f->field => $f->value]);
+    }
+
+    $livewire = Livewire::test(Register::class)
+        ->set($f->field, $f->value); //vai setar no Register o campo do banco onde o valor tem que ser obrigatório
+
+    if(property_exists($f, 'aValue')) { //se existe o aValue, vai adicionar também o aField com o aValue
+        $livewire->set($f->aField, $f->aValue);
+    }
+
+    $livewire->call('submit')
         ->assertHasErrors([$f->field => $f->rule]); //certificar se tem erro com o $field sendo obrigatório
 })->with([
     'name::required' => (object)[
@@ -76,6 +87,14 @@ test('validation rules', function ($f) {
         'field' => 'email',
         'value' => 'joe@doe.com',
         'rule'  => 'confirmed',
+    ],
+
+    'email::unique' => (object) [
+        'field'  => 'email',
+        'value'  => 'joe@doe.com',
+        'rule'   => 'unique',
+        'aField' => 'email_confirmation',
+        'aValue' => 'joe@doe.com',
     ],
 
     'password::required' => (object)[
