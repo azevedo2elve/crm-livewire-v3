@@ -3,6 +3,7 @@
 namespace App\Livewire\Auth;
 
 use App\Models\User;
+use App\Notifications\WelcomeNotification;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Rule;
 use Livewire\Component; //para adicionar anotação Rule para adicionar atributos dentro dessas regras
@@ -39,6 +40,8 @@ class Register extends Component
         ]);
 
         auth()->login($user);
+
+        $user->notify(new WelcomeNotification()); //é uma instância, então precisa ser um novo (new)
 
         $this->redirect('/');
     }
