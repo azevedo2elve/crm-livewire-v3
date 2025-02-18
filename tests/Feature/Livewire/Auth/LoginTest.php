@@ -9,34 +9,34 @@ it('should render the component', function () {
         ->assertOk();
 });
 
-// it('should be able to login with correct credentials', function () {
-//     $user = User::factory()->create([
+it('should be able to login', function () {
+    $user = User::factory()->create([
+        'email'    => 'joe@doe.com',
+        'password' => 'password', // não precisa passar o bcrypt porque o model já tem um $cast de hashed no password, por baixo dos panos ele vai fazer o hash e cuidar do que precisa
+    ]);
+
+    $livewire = Livewire::test(Login::class)
+        ->set('email', 'joe@doe.com')
+        ->set('password', 'password')
+        ->call('tryToLogin')
+        ->assertHasNoErrors()
+        ->assertRedirect(route('dashboard'));
+
+    expect(auth()->check())->toBeTrue()
+        ->and(auth()->user())->id->toBe($user->id);
+});
+
+// it('should not be able to login with wrong credentials', function () {
+//     User::factory()->create([
 //         'email'    => 'joe@doe.com',
-//         'password' => 'password',
+//         'password' => 'password', // não precisa passar o bcrypt porque o model já tem um $cast de hashed no password, por baixo dos panos ele vai fazer o hash e cuidar do que precisa
 //     ]);
 
 //     Livewire::test(Login::class)
 //         ->set('email', 'joe@doe.com')
-//         ->set('password', 'password')
+//         ->set('password', 'wrong-password')
 //         ->call('login')
-//         ->assertHasNoErrors()
-//         ->assertRedirect('dashboard');
+//         ->assertHasErrors();
 
-//     expect(auth()->check())->toBeTrue()
-//         ->and(auth()->user())->id->toBe($user->id);
+//     expect(auth()->check())->toBeFalse();
 // });
-
-it('should not be able to login with wrong credentials', function () {
-    User::factory()->create([
-        'email'    => 'joe@doe.com',
-        'password' => 'password',
-    ]);
-
-    Livewire::test(Login::class)
-        ->set('email', 'joe@doe.com')
-        ->set('password', 'wrong-password')
-        ->call('login')
-        ->assertHasErrors();
-
-    expect(auth()->check())->toBeFalse();
-});
