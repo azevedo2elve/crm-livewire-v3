@@ -27,6 +27,8 @@ class Login extends Component
         // Como sabe qual model utilizar? Em config/auth.php, dentro tem a configuração, drive ultilizando, provider; providers users significa que está usando o driver eloquent e o model App\Models\User::class
         if (!Auth::attempt(['email' => $this->email, 'password' => $this->password])) {
 
+            $this->addError('invalidCredentials', trans('auth.failed'));
+
             return;
         }
 

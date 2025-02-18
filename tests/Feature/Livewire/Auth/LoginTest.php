@@ -26,6 +26,16 @@ it('should be able to login', function () {
         ->and(auth()->user())->id->toBe($user->id);
 });
 
+it('should make sure to inform the user an error when email and password doesnt work', function () {
+    $livewire = Livewire::test(Login::class)
+        ->set('email', 'joe@doe.com')
+        ->set('password', 'password')
+        ->call('tryToLogin')
+        ->assertHasErrors(['invalidCredentials'])
+        ->assertSee(trans('auth.failed')); // laravel tem uma mensagem no auth que se chama auth.failed (php artisan lang:publish)
+    // assertSee é para ver o erro no componente/na tela
+});
+
 // it('should not be able to login with wrong credentials', function () {
 //     User::factory()->create([
 //         'email'    => 'joe@doe.com',

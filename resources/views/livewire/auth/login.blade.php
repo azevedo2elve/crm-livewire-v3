@@ -9,5 +9,9 @@
             <x-button label="Create an account" class="btn-ghost" link="/register" />
             <x-button label="Login" type="submit" icon="o-paper-airplane" class="btn-primary" spinner="login" />
         </x-slot:actions>
+
+        @error('invalidCredentials')
+            <span>{{ $message }}</span>
+        @enderror
     </x-form>
 </div>
